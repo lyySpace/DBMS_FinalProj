@@ -41,3 +41,23 @@ def find_student_by_id(student_id):
     cur.close()
     conn.close()
     return result
+
+def run_sql(query: str):
+    conn = connect_db()
+    cur = conn.cursor()
+    try:
+        cur.execute(query)
+
+        if query.strip().lower().startswith("select"):
+            rows = cur.fetchall()
+            for row in rows:
+                print(row)
+        else:
+            conn.commit()
+            print("SQL executed.")
+    except Exception as e:
+        print("Error:", e)
+        conn.rollback()
+    finally:
+        cur.close()
+        conn.close()

@@ -136,3 +136,21 @@ INSERT INTO student VALUES ('B12508026','test1234','Josh',1,'b12508026@ntu.edu.t
 INSERT INTO resource (resource_type,quota,supplier_id,title,deadline,description)
 VALUES ('I',5,'C001','AI intern','2025-12-31','An intenrnship position at Microsoft for AI research.');
 ```
+
+user(user_id PK, real_name, email, username, password, nickname, role, registered_at, is_deleted)
+
+student_profile(user_id FK→user, student_id, department_id, entry, grade)
+department_profile(user_id FK→user, department_id, department_name)
+company_profile(user_id FK→user, company_name, contact_person, industry)
+
+student_department(user_id FK→user, department_id, role, start_semester, end_semester)
+student_gpa(user_id FK→user, semester, gpa)
+student_course_record(user_id FK→user, semester, course_id, score)
+achievement(achievement_id PK, user_id FK→user, category, title, description, creation_date, status)
+resource(resource_id PK, resource_type, quota, supplier_id FK→user, title, deadline, description, email, status, is_deleted)
+resource_condition(resource_id FK→resource, department_id, avg_gpa, current_gpa, is_poor)
+
+application(user_id FK→user, resource_id FK→resource, apply_date, status)
+
+push_record(push_id PK, pusher_id FK→user, student_id FK→user, resource_id FK→resource, push_datetime)
+

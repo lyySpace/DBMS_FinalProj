@@ -1,6 +1,6 @@
 import psycopg2
 from passlib.hash import bcrypt
-from utils import list_students
+from utils import list_students, run_sql
 from utils_redis import create_session, verify_session, delete_session
 
 
@@ -87,6 +87,15 @@ def logout(student_id: str):
     delete_session(student_id)
     print("LOGGED OUT SUCCESSFULLY")
 
+def sql_console():
+    print("\n=== SQL CONSOLE ===")
+    print("ENTER 'EXIT()' TO QUIT SQL CONSOLE")
+    while True:
+        q = input("SQL> ").strip()
+        if q.lower() == "exit()":
+            break
+        run_sql(q)
+
 # === MAIN LOOP ===
 def main():
     while True:
@@ -110,7 +119,8 @@ def main():
             print("STUDENT_ID \t| NAME \t| EMAIL")
             for student in students:
                 print(f"{student[0]} \t| {student[1]} \t| {student[2]}")
-
+        elif choice == "5":
+            sql_console()
         else:
             print("PLEASE SELECT A VALID OPTION")
 
