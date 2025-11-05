@@ -4,3 +4,6 @@ I established the baseline of the system, just including the student table and l
 [2025-11-05 11:19]
 I redesign the database schema so that I can develop the system more smoothly. Including considering some student that may have multiple departments (double major, minor, transfer history), so I add a new table to store the relationship between student and department.
 The total system is relying on "user_id" as the primary key, so I use UUID to generate unique user_id for each user.
+
+[2025-11-05 12:06]
+I finish the final DDL of the database schema, which clearly defines all the tables and their relationships. It's a huge step for the project.
