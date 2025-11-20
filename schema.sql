@@ -1,6 +1,3 @@
-CREATE DATABASE group_7;
-\c group_7;
-
 -- UUID 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 

@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:16
+    container_name: group7_psql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: group7_db
+    volumes:
+      - group7_pgdata:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "5432:5432"
+    restart: "no"
+
+  redis:
+    image: redis:7
+    container_name: group7_redis
+    ports:
+      - "6379:6379"
+    restart: "no"
+
+  backend:
+    build: ./backend
+    container_name: group7_backend
+
+    # 掛載後端程式碼，但不再使用 reload (安全)
+    volumes:
+      - ./backend:/app
+
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+
+    # **最重要：不要使用 --reload**
+    # 避免大量 watcher + overlayfs → GNOME/Chrome/VSCode 壞掉
+    command: uvicorn app.interfaces.api:app --host 0.0.0.0 --port 8000
+
+    ports:
+      - "8000:8000"
+
+    # 不要自動啟動 (避免 Wayland/GNOME 還沒啟動就搶資源)
+    restart: "no"
+
+volumes:
+  group7_pgdata:

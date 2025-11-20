@@ -37,5 +37,67 @@ sudo -u postgres psql
 ```
 2. execute sql file
 ```
+CREATE DATABASE group_7;
+\c group_7;
+
 \i schema.sql
+```
+
+
+proj/
+  docker-compose.yml
+  backend/
+    Dockerfile
+    requirements.txt
+    alembic.ini
+    alembic/
+      env.py
+      versions/
+    app/
+      __init__.py
+      core/
+        config.py
+        security.py
+      db/
+        base.py
+        session.py
+        models/ # data tables
+          __init__.py
+      services/
+        __init__.py
+      interfaces/
+        cli.py
+        api.py
+
+I remove all the old codes and start a new project structure as above.
+Here are some commands:
+
+To rebuild the whole docker environment from scratch:()
+```
+sudo docker compose down --volumes
+sudo docker compose build --no-cache
+sudo docker compose up -d
+```
+
+modify code
+```
+sudo docker compose restart backend
+```
+
+update the backend requirements.txt:
+```
+sudo docker compose build backend
+sudo docker compose up -d
+```
+
+modify Dockerfile
+```
+sudo docker compose build --no-cache backend
+sudo docker compose up -d
+``` 
+
+update alembic migration:
+```
+docker compose exec backend alembic revision --autogenerate -m "update xx"
+docker compose exec backend alembic upgrade head
 ```

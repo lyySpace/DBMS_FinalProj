@@ -1,0 +1,26 @@
+[2025-11-04 16:32]
+I established the baseline of the system, just including the student table and login, logout function. Using redis to store session information. Next step would be think the architecture of the whole system strcutrely so that I'll feel more comfortable when adding new features.
+
+[2025-11-05 11:19]
+I redesign the database schema so that I can develop the system more smoothly. Including considering some student that may have multiple departments (double major, minor, transfer history), so I add a new table to store the relationship between student and department.
+The total system is relying on "user_id" as the primary key, so I use UUID to generate unique user_id for each user.
+
+[2025-11-05 12:06]
+I finish the final DDL of the database schema, which clearly defines all the tables and their relationships. It's a huge step for the project.
+
+[2025-11-05 12:13]
+I create the tables with schema.sql file in the PostgreSQL database, besides, leave a instruction in note.md on how to create the database from schema.sql file.
+
+[2025-11-05 14:51]
+I combine the login and register function into one single auth module, which makes the code structure more clear and easier to maintain.
+I try to establish a simple frontend web site(pure html), but the bridge between frontend and backend is not done yet.
+
+[2025-11-19 15:24]
+I need to redesign the development plan. The first step should be the cli interface not the web interface. Still, the socket for vue communication is needed, but the frontend would be design later.
+
+This system would be built on docker to sync the development environment.
+
+[2025-11-21 01:53]
+I constructed the whole file structure for docker. But it just contains some folders and empty files now, just a skeleton structure.
+
+Next step would be generate the ORM model files and establish the docker environment and make sure the backend can run inside the docker container.
