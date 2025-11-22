@@ -33,3 +33,5 @@ WTF a typing error waste me a half hour to fix. I just wrote "cofig.py" instead 
 There's still some errors in the relation rules of the ORM model, need to fix them later.
 The problem is, our relationships are too complex, and some relationships are many-to-many relationships, which makes the ORM model confusing. Thus, I decided to remove the relationship rules in the ORM model, just utilize SQL to handle the relationships.
 
+[2025-11-22 10:12]
+This project is too complex with FastAPI. I decided to switch to NestJS for the backend. The old files are stored in the "backend_old" and compressed.

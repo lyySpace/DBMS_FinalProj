@@ -10,7 +10,7 @@ list tables: \dt
 call system command: \! <command>(eg. \! clear)
 
 - schema draft
-user(user_id PK, real_name, email, username, password, nickname, role, registered_at, is_deleted)
+user(user_id PK, real_name, email, username, password, nickname, role, is_admin, registered_at, is_deleted)
 
 student_profile(user_id FK→user, student_id, department_id, entry, grade)
 department_profile(user_id FK→user, department_id, department_name)
@@ -43,31 +43,20 @@ CREATE DATABASE group_7;
 \i schema.sql
 ```
 
+src/modules/
+  auth/                     # 身分驗證（登入/註冊/JWT）
+  user/                     # 基本使用者資料（不分角色）
+  student/                  # 學生 Domain
+      profile/              # student_profile
+      application/          # 申請資源
+      achievement/          # 上傳成就
+  department/               # 校方使用者 Profile
+  company/                  # 企業 Profile
+  resource/                 # 資源主功能
+      resource-condition/   # 資源條件
+  push/                     # 推播推薦
+  admin/                    # 管理員治理層（最大權限）
 
-proj/
-  docker-compose.yml
-  backend/
-    Dockerfile
-    requirements.txt
-    alembic.ini
-    alembic/
-      env.py
-      versions/
-    app/
-      __init__.py
-      core/
-        config.py
-        security.py
-      db/
-        base.py
-        session.py
-        models/ # data tables
-          __init__.py
-      services/
-        __init__.py
-      interfaces/
-        cli.py
-        api.py
 
 I remove all the old codes and start a new project structure as above.
 Here are some commands:
@@ -90,14 +79,8 @@ sudo docker compose build backend
 sudo docker compose up -d
 ```
 
-modify Dockerfile
+modify Dockerfile               
 ```
 sudo docker compose build --no-cache backend
 sudo docker compose up -d
 ``` 
-
-update alembic migration:
-```
-docker compose exec backend alembic revision --autogenerate -m "update xx"
-docker compose exec backend alembic upgrade head
-```

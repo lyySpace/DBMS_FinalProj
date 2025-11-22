@@ -12,6 +12,7 @@ CREATE TABLE "user" (
     password VARCHAR(128) NOT NULL,
     nickname VARCHAR(50) NOT NULL,
     role VARCHAR(20) CHECK(role IN ('student','department','company')),
+    is_admin BOOLEAN DEFAULT FALSE,
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_deleted BOOLEAN DEFAULT FALSE
 );
