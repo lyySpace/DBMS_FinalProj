@@ -75,7 +75,7 @@ const handleSubmit = async () => {
   <div class="container">
     <h2>{{ pageTitle }}</h2>
     <p style="text-align: center; color: #9FB1BC; font-size: 0.9rem; margin-bottom: 20px;">
-      First time logging in, please complete your detailed information.
+      First time log in, please complete your detailed information.
     </p>
 
     <form @submit.prevent="handleSubmit">
