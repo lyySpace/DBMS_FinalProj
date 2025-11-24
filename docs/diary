@@ -44,3 +44,6 @@ Fix the env error of missing JWT_SECRET variable.
 
 [2025-11-24 19:17]
 I finish the connect between frontend and backend for the register function. The register function works well now. But I havn't finished the login function and JWT authentication yet.
+
+[2025-11-24 19:53]
+I put .env.local and .env.*.local into .gitignore so that my partners can't run the container smoothly. I commented these lines in .gitignore for now, but remember to uncomment them later.

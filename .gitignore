@@ -52,10 +52,11 @@ logs/
 *.bak
 
 # Environment variables and secrets
-.env
-.env.local
-.env.*.local
-secrets.yml
+# TODO: while finish the project, remember to uncomment these lines
+# .env
+# .env.local
+# .env.*.local
+# secrets.yml
 
 # else
 *.class
