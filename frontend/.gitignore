@@ -12,7 +12,8 @@ node_modules
 dist
 dist-ssr
 coverage
-*.local
+# TODO: while finish the project, remember to uncomment these lines
+# *.local
 
 # Editor directories and files
 .vscode/*

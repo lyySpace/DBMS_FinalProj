@@ -47,3 +47,6 @@ I finish the connect between frontend and backend for the register function. The
 
 [2025-11-24 19:53]
 I put .env.local and .env.*.local into .gitignore so that my partners can't run the container smoothly. I commented these lines in .gitignore for now, but remember to uncomment them later.
+
+[2025-11-24 23:56]
+I wrote 7 hours today on this project. But there's still a lot of work to do. Next step would be finish the login function with JWT authentication. I have to spent more time on studying JWT.
