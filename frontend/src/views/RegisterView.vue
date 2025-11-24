@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const API_URL = import.meta.env.VITE_API_URL;
 
 // 對應 DB: user table
 const formData = ref({
@@ -14,21 +15,44 @@ const formData = ref({
   role: 'student' // 預設角色
 });
 
+
 const handleRegister = async () => {
-  // 模擬 API 呼叫
-  console.log('Registering User:', formData.value);
-  
-  // TODO: 這裡呼叫後端 /api/register
-  // 成功後，通常會回傳 token，並引導至「第一次登入設定 Profile」
-  
-  alert('Registration successful! Please complete your personal profile settings.');
-  
-  // 透過 query 傳遞 role，讓下一個頁面知道要顯示什麼表單
-  router.push({ 
-    name: 'ProfileSetup', 
-    query: { role: formData.value.role, username: formData.value.username } 
-  });
+  try {
+    const response = await fetch(`${API_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData.value)
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      alert(err.message || 'Registration failed');
+      return;
+    }
+
+    const data = await response.json();
+
+    // 存 token
+    localStorage.setItem('token', data.access_token);
+
+    alert('Registration successful! Please complete your personal profile.');
+
+    router.push({
+      name: 'ProfileSetup',
+      query: {
+        role: data.user.role,
+        username: data.user.username
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    alert('Network error');
+  }
 };
+
+
 </script>
 
 <template>

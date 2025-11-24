@@ -118,7 +118,7 @@ export class AuthService {
       await manager.save(User, entity);
       return entity;
     });
-
+    console.log('Registered new user:', user.user_id);
     // registration successful, auto login
     const tokens = await this.generateTokens(user);
 

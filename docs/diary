@@ -41,3 +41,6 @@ Lyy finished a simple frontend interface of login and register, but she havn't c
 
 [2025-11-23 11:55]
 Fix the env error of missing JWT_SECRET variable.
+
+[2025-11-24 19:17]
+I finish the connect between frontend and backend for the register function. The register function works well now. But I havn't finished the login function and JWT authentication yet.
