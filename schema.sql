@@ -15,8 +15,8 @@ CREATE TABLE "user" (
     is_admin BOOLEAN DEFAULT FALSE,
     otp_secret VARCHAR(64),
     is_2fa_enabled BOOLEAN DEFAULT FALSE,
-    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_deleted BOOLEAN DEFAULT FALSE
+    registered_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ DEFAULT '9999-12-31 23:59:59'
 );
 
 -------------------------------------------------

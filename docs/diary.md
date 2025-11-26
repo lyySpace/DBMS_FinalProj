@@ -60,3 +60,6 @@ I decided to add 2FA function to enhance the security of the system. So I modifi
 
 [2025-11-26 11:35]
 There are several bugs after modifying the user entity. I fixed them one by one. I shouldn't push the temporary broken code to the main repository.
+
+[2025-11-26 17:42]
+I change the schema again, deleting the is_deleted boolean column and adding deleted_at timestamp column instead. This is more flexible for future use. If deleted_at is '9999-12-31 23:59:59', then the user is not deleted. Otherwise, the user is deleted. Besides, I'll design a function to automatically purge the deleted user after 1 year. This function would be placed at /modules/scheduler/tasks.
