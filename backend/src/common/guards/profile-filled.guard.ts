@@ -15,7 +15,7 @@ export class ProfileFilledGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { user } = context.switchToHttp().getRequest();
-
+    console.log("Checking profile for user:", user);
     const mapping = {
       student: StudentProfile,
       company: CompanyProfile,

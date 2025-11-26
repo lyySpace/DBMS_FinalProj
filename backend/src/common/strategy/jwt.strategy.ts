@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+
   constructor() {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET environment variable is not set');
@@ -16,6 +17,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    console.log("Validating JWT payload:", payload);
+
     return {
       sub: payload.sub,    // user_id
       role: payload.role,  // user.role

@@ -7,5 +7,5 @@ export class RefreshDto {
 
   @IsNotEmpty()
   @IsString()
-  expiredAccessToken: string;
+  accessToken: string;
 }

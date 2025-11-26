@@ -63,3 +63,6 @@ There are several bugs after modifying the user entity. I fixed them one by one.
 
 [2025-11-26 17:42]
 I change the schema again, deleting the is_deleted boolean column and adding deleted_at timestamp column instead. This is more flexible for future use. If deleted_at is '9999-12-31 23:59:59', then the user is not deleted. Otherwise, the user is deleted. Besides, I'll design a function to automatically purge the deleted user after 1 year. This function would be placed at /modules/scheduler/tasks.
+
+[2025-11-27 00:54]
+I forgot to set JWT_SECRET in the generateToken function in auth.service.ts. This bug bothers me for several hours. Finally I found the problem and fixed it.

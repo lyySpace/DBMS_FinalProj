@@ -3,11 +3,13 @@ import { ProfileService } from './profile/profile.service';
 import { UpsertStudentProfileDto } from './dto/upsert-student-profile.dto';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('student/profile')
+@Roles('student')
 export class StudentController {
   constructor(private readonly profileService: ProfileService) {}
-
+  
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Put()
   async upsertProfile(

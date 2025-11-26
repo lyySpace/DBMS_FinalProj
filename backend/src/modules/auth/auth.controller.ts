@@ -28,7 +28,7 @@ export class AuthController {
   async refresh(@Body() dto: RefreshDto) {
     console.log('refresh dto = ', dto);
 
-    return this.authService.refresh(dto.refreshToken, dto.expiredAccessToken);
+    return this.authService.refresh(dto.refreshToken, dto.accessToken);
   }
 
   @Post('logout')

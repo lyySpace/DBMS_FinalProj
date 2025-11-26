@@ -38,11 +38,14 @@ export class AuthService {
      ===========================================================*/
   async verifyAccessToken(token: string) {
     try {
-      return await this.jwtService.verifyAsync(token);
+      return await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET,
+      });
     } catch {
       throw new UnauthorizedException('Invalid or expired access token');
     }
   }
+
 
   /* ===========================================================
      Refresh Token Hash
@@ -59,10 +62,12 @@ export class AuthService {
     const payload = { sub: user.user_id, role: user.role };
 
     const accessToken = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
       expiresIn: '15m',
     });
 
     const refreshToken = await this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
       expiresIn: '7d',
     });
 
@@ -239,8 +244,10 @@ export class AuthService {
     let accessPayload: any;
     try {
       accessPayload = await this.jwtService.verifyAsync(expiredAccessToken, {
+        secret: process.env.JWT_SECRET,
         ignoreExpiration: true,
       });
+
     } catch {
       throw new UnauthorizedException('Invalid access token');
     }
@@ -261,7 +268,10 @@ export class AuthService {
     // 3. 驗 refresh token
     let rtPayload: any;
     try {
-      rtPayload = await this.jwtService.verifyAsync(refreshToken);
+      rtPayload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: process.env.JWT_SECRET,
+      });
+
     } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
