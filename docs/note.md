@@ -32,11 +32,11 @@ push_record(push_id PK, pusher_id FK→user, student_id FK→user, resource_id F
 0. let your location be the folder where schema.sql is located
 
 1. connect to db
-```
+``` bash
 sudo -u postgres psql
 ```
 2. execute sql file
-```
+``` bash
 CREATE DATABASE group_7;
 \c group_7;
 
@@ -62,25 +62,54 @@ I remove all the old codes and start a new project structure as above.
 Here are some commands:
 
 To rebuild the whole docker environment from scratch:()
-```
+``` bash
 sudo docker compose down --volumes
 sudo docker compose build --no-cache
 sudo docker compose up -d
 ```
 
 modify code
-```
+``` bash
 sudo docker compose restart backend
 ```
 
 update the backend requirements.txt:
-```
+``` bash
 sudo docker compose build backend
 sudo docker compose up -d
 ```
 
 modify Dockerfile               
-```
+``` bash
 sudo docker compose build --no-cache backend
 sudo docker compose up -d
 ``` 
+
+- Anyone who wants to test this project should follow these steps to generate basic data in the database
+
+``` sql
+insert into "user" (real_name, email, username, password, nickname, role)
+values ('bmeHost', 'bme@example.com', 'bmeHost', '123456789', 'bmeHost', 'department'),
+ ('csHost', 'cs@example.com', 'csHost', '123456789', 'csHost', 'department'),
+ ('tsmcHost', 'tsmc@example.com', 'tsmcHost', '123456789', 'tsmcHost', 'company'),
+ ('711Host', '711@example.com', '711Host', '123456789', '711Host', 'company');
+
+
+
+insert into "department_profile"(department_id, department_name, contact_person)
+values (5080, 'BME', '248c2372-03ab-4b19-a83b-9f5689c95293');
+
+insert into "company_profile"(company_name, contact_person, industry)
+values ('tsmc', 'b21e8ebc-613b-420f-a292-17027589a0e6', 'IC'),
+ ('711', '345c8fa4-992e-4d6e-89b6-c61c35d2fa18', 'Retail Store');
+ ```
+ Note that the department_id and contact_person should match the actual user_id in your database. You can find them by querying the user table.
+ ``` sql
+select user_id, real_name from "user";
+ ```
+
+ For more details, this is a section cited from diary.md:
+> [2025-11-27 16:05]
+Finally I fixed the problem, now I can upsert student profile by api calls. User has to manually add a default user and add this user's department in student_department table first, then he can upsert his profile because the foreign key constraint needs to be satisfied. It's a little bit inconvenient now, but in pratical there won't be such situation that start up with an empty databse.
+
+You can check the whole change log in diary.md for more details.
