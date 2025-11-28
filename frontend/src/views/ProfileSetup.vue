@@ -2,7 +2,6 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import apiClient from '@/api/axios';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -66,7 +65,8 @@ const handleSubmit = async () => {
     console.log(`[Mock] POST ${endpoint}`, payload);
     
     // 更新狀態
-    authStore.updateSetupStatus(true);
+    //TODO: fix this bug
+    authStore.setNeedProfile(false);
     alert('Profile setup complete!');
 
     // 導向
