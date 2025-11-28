@@ -53,10 +53,7 @@ router.beforeEach((to, from, next) => {
 
   // 2. 檢查是否需要完成 Profile 設定
   // 如果已登入但還沒設定，且正要去 Dashboard -> 強制去 Setup
-  console.log('Checking profile setup:', {
-    requiresSetup: to.meta.requiresSetup,
-    isSetupDone: authStore.isSetupDone
-  });
+  console.log('needProfile:', authStore.needProfile);
   if (authStore.needProfile === true && to.path !== '/setup-profile') {
     return '/setup-profile';
   }

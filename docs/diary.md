@@ -91,3 +91,6 @@ I export the database to backup.sql, now anyone can restore the database from ba
 
 [2025-11-28 17:05]
 Now the register function works well. After registering, user would be automatically logged in, and the JWTs would be stored in http-only cookie.
+
+[2025-11-29 00:13]
+I finished the api call for upserting department profile. Next step would be the re-arrange of schema.sql (cascade function).

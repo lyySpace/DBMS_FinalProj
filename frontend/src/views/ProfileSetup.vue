@@ -2,6 +2,8 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import apiClient from '@/api/axios';
+
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -42,37 +44,38 @@ const handleSubmit = async () => {
     let endpoint = '';
 
     if (userRole.value === 'student') {
-      endpoint = '/student/profile';
+      endpoint = '/api/student/profile';
       payload = { 
         student_id: profileData.value.student_id,
         department_id: profileData.value.department_id,
-        entry_year: profileData.value.entry_year,
+        entry: profileData.value.entry_year,
         grade: profileData.value.grade
       };
     } else if (userRole.value === 'department') {
-      endpoint = '/department/profile';
+      endpoint = '/api/department/profile';
       payload = { department_name: profileData.value.department_name };
     } else {
-      endpoint = '/company/profile';
-      payload = { company_name: profileData.value.company_name, industry: profileData.value.industry };
+      endpoint = '/api/company/profile';
+      payload = { 
+        company_name: profileData.value.company_name, 
+        industry: profileData.value.industry 
+      };
     }
 
     // ----------------------------------------------------------------
-    // TO DO: [POST] {endpoint}
+    // 正式送出 PUT {endpoint}
     // ----------------------------------------------------------------
-    // await apiClient.post(endpoint, payload);
-    console.log(`[Mock] POST ${endpoint}`, payload);
-    
-    // 更新狀態
+    await apiClient.put(endpoint, payload, { withCredentials: true });
+
     authStore.setNeedProfile(false);
     alert('Profile setup complete!');
 
-    // 導向
     if (userRole.value === 'student') router.push('/student/dashboard');
     else if (userRole.value === 'department') router.push('/department/dashboard');
     else router.push('/company/dashboard');
 
   } catch (error) {
+    console.error(error);
     alert('Failed to update profile');
   }
 };

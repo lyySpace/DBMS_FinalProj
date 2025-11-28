@@ -1,14 +1,22 @@
 # notes
 
-- from terminal connect to psql
-sudo -u postgres psql
-
 - At psql cli
-list dbs: \l
-connect to db: \c <db_name>
-list tables: \dt
-call system command: \! <command>(eg. \! clear)
+``` sql
+-- list dbs: 
+\l
+-- connect to db: 
+\c <db_name>
+-- e.g.
+\c group_7
 
+-- list tables: 
+\dt
+
+-- call system command: 
+\! <command>
+-- e.g. 
+\! clear
+```
 - schema draft
 user(user_id PK, real_name, email, username, password, nickname, role, is_admin, registered_at, is_deleted)
 
