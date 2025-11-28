@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
 
 
 async function bootstrap() {
@@ -20,6 +21,20 @@ async function bootstrap() {
     }),
   );
   app.use(cookieParser());
+
+  // global rate limiter
+  const globalLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // 10 分鐘視窗
+    max: 1000,                // 每個 IP 在 10 分鐘內最多 1000 個請求
+    standardHeaders: true,    // 回傳 RateLimit-* header（建議開）
+    legacyHeaders: false,     // 禁用 X-RateLimit-* 舊 header
+    message: {
+      statusCode: 429,
+      error: 'Too Many Requests',
+      message: 'Too many requests, please try again later.',
+    },
+  });
+  app.use(globalLimiter);
 
   //app.useGlobalGuards(new JwtAuthGuard());
 

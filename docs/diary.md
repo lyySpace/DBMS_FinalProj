@@ -94,3 +94,6 @@ Now the register function works well. After registering, user would be automatic
 
 [2025-11-29 00:13]
 I finished the api call for upserting department profile. Next step would be the re-arrange of schema.sql (cascade function).
+
+[2025-11-29 00:35]
+Add a little function: limit the number of requests from same IP address in a certain time period to prevent brute-force attacks. (1000 requests per 10 minutes)
