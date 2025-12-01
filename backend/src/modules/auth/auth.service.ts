@@ -16,9 +16,6 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
 import { StudentProfile } from '../../entities/student-profile.entity';
-import { CompanyProfile } from '../../entities/company-profile.entity';
-import { DepartmentProfile } from '../../entities/department-profile.entity';
-
 
 @Injectable()
 export class AuthService {
@@ -140,17 +137,9 @@ export class AuthService {
         .exists({ where: { user_id: user.user_id } });
     }
 
-    if (user.role === 'company') {
-      return await this.dataSource
-        .getRepository(CompanyProfile)
-        .exists({ where: { user_id: user.user_id } });
-    }
-
-    if (user.role === 'admin') {
-      return await this.dataSource
-        .getRepository(DepartmentProfile)
-        //TODO: fix this 
-        .exists({ where: { user_id: user.user_id } });
+    // company or department does not need profile setup
+    if (user.role === 'company' || user.role === 'department') {
+      return true;
     }
 
     return false;
@@ -166,6 +155,7 @@ export class AuthService {
       where: [{ email }, { username }],
     });
     if (existed) {
+      console.log('Existed user tried to register:', username, email);
       throw new BadRequestException('Email or username already exists');
     }
 

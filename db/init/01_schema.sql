@@ -11,13 +11,63 @@ CREATE TABLE "user" (
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(128) NOT NULL,
     nickname VARCHAR(50) NOT NULL,
-    role VARCHAR(20) CHECK(role IN ('student','department','company')),
+    role VARCHAR(20) CHECK(role IN ('student','department','company')) NOT NULL,
     is_admin BOOLEAN DEFAULT FALSE,
     otp_secret VARCHAR(64),
     is_2fa_enabled BOOLEAN DEFAULT FALSE,
     registered_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMPTZ DEFAULT '9999-12-31 23:59:59'
+    deleted_at TIMESTAMPTZ DEFAULT '9999-12-31 23:59:59',
+
+    -- 各角色對應的外鍵欄位
+    company_id UUID,
+    department_id UUID,
+
+    -- 外鍵：公司角色
+    CONSTRAINT fk_user_company
+        FOREIGN KEY (company_id)
+        REFERENCES company_profile(company_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+
+    -- 外鍵：科系角色
+    CONSTRAINT fk_user_department
+        FOREIGN KEY (department_id)
+        REFERENCES department_profile(department_id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+
+    -- 關鍵的 role 驗證
+    CONSTRAINT role_requires_company_or_department CHECK (
+        (role = 'company' AND company_id IS NOT NULL AND department_id IS NULL) OR
+        (role = 'department' AND department_id IS NOT NULL AND company_id IS NULL) OR
+        (role = 'student' AND company_id IS NULL AND department_id IS NULL)
+    )
 );
+
+-- TODO: User application table (if needed)
+-- CREATE TABLE user_application (
+--     application_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+--     -- 與 user 幾乎相同的欄位
+--     real_name VARCHAR(50) NOT NULL,
+--     email VARCHAR(50) NOT NULL,
+--     username VARCHAR(50) NOT NULL,
+--     password VARCHAR(128) NOT NULL,
+--     nickname VARCHAR(50) NOT NULL,
+--     role VARCHAR(20) CHECK(role IN ('department','company')) NOT NULL,
+--     registered_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+--     -- 新增: 審核狀態
+--     status VARCHAR(20)
+--         CHECK(status IN ('pending','approved','rejected'))
+--         DEFAULT 'pending',
+
+--     submit_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+--     review_time TIMESTAMPTZ,
+--     reviewed_by UUID REFERENCES "user"(user_id),
+--     review_comment TEXT
+-- );
+
 
 -------------------------------------------------
 -- Profile tables

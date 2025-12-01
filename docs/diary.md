@@ -112,3 +112,20 @@ Remember to fix the bug:
 src/modules/auth/auth.service.ts:153:28 - error TS2353: Object literal may only specify known properties, and 'user_id' does not exist in type 'FindOptionsWhere<DepartmentProfile> | FindOptionsWhere<DepartmentProfile>[]'.
 
 153         .exists({ where: { user_id: user.user_id } });
+
+[2025-12-1 22:36]
+There's no need of checking profile setup for company and department role (this system is majorly for students), so I modified the auth.service.ts file to fix that bug.
+
+There are lots of apis need to be implemented:
+1. delete user account after soft delete 1 year
+2. delete application after 30 days if the application is not accepted
+3. assign another to be an admin v
+
+I finished the assign admin function in common.service.ts. Admin can promote other users to be admin too.
+e.g. promote username 'b12508025' to be admin can be done by calling this api:
+``` api
+http://localhost:3000/api/common/set-admin/b12508025
+```
+
+There's am issue in the schema that I forget to record the department_id or company_id in the user table. So that admin can't know which department or company he is managing. I need to modify the schema again, perhaps tomorrow. The schema should be modified and the generate code should be updated.
+

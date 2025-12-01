@@ -24,6 +24,9 @@ export class User {
   @Column({ length: 20 })
   role: string;
 
+  @Column({ default: false })
+  is_admin: boolean;
+
   @Column({ type: 'varchar', length: 64, nullable: true })
   otp_secret: string | null;
 
