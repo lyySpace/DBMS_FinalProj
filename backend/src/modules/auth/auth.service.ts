@@ -149,6 +149,7 @@ export class AuthService {
     if (user.role === 'admin') {
       return await this.dataSource
         .getRepository(DepartmentProfile)
+        //TODO: fix this 
         .exists({ where: { user_id: user.user_id } });
     }
 

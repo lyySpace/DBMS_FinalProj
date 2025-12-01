@@ -104,3 +104,11 @@ I changed the schema.sql to add cascade delete function and some achievement fun
 Next step would be list the departments while registering.
 
 Hope I can finish the whole project before the deadline.....
+
+[2025-12-1 12:46]
+I finished listing the departments while registering. User can select his department from a dropdown list. The department list is fetched from /api/common/departments api. Next step would be resource management functions.
+
+Remember to fix the bug: 
+src/modules/auth/auth.service.ts:153:28 - error TS2353: Object literal may only specify known properties, and 'user_id' does not exist in type 'FindOptionsWhere<DepartmentProfile> | FindOptionsWhere<DepartmentProfile>[]'.
+
+153         .exists({ where: { user_id: user.user_id } });

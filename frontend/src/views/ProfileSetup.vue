@@ -14,15 +14,14 @@ const departments = ref<{id: string, name: string}[]>([]);
 
 onMounted(async () => {
   if (userRole.value === 'student') {
-    // ----------------------------------------------------------------
-    // TODO: [GET] /api/common/departments (取得系所列表)
-    // ----------------------------------------------------------------
-    
-    // Mock Data
-    departments.value = [
-      { id: '9020', name: 'Computer Science' },
-      { id: '5080', name: 'Biomedical Engineering' }
-    ];
+    try {
+      const res = await apiClient.get('/api/common/departments', {
+        withCredentials: true
+      });
+      departments.value = res.data;
+    } catch (err) {
+      console.error('[GET /common/departments] error:', err);
+    }
   }
 });
 

@@ -14,6 +14,7 @@ import { ResourceModule } from './modules/resource/resource.module';
 import { PushModule } from './modules/push/push.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { RedisModule } from './modules/redis/redis.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { RedisModule } from './modules/redis/redis.module';
     PushModule,
     AdminModule,
     RedisModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
