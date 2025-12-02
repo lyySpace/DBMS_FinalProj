@@ -149,3 +149,6 @@ I finished the resource condition setting function. Now department or company ca
 
 [2025-12-3 00:31]
 I generate the api manual with copilot.
+
+[2025-12-3 00:35]
+Next step would be the application of resource by students. I generated 3 entities, next day would be the api implementation.
