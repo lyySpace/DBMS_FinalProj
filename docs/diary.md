@@ -146,3 +146,6 @@ If a user (department or company) wants to post a resource, he need to create a 
 There should be a function that admin can add a new company. For departments, maybe later (perhaps useless).
 
 I finished the resource condition setting function. Now department or company can create a resource and set its conditions. The analysis of eligible students wouild be done later.
+
+[2025-12-3 00:31]
+I generate the api manual with copilot.
