@@ -160,3 +160,7 @@ I export current database to backup.sql. Export the csv files of the database ta
 The password of the generated data isn't 'ntu-2025-test'.....Waste me lot of time. I change it into '123456'
 I finished the api of get students' gpa records.
 If frontend ask for user data, the password field would be masked as '*********' for security reason.
+
+[2025-12-3 21:11]
+I fix the bug that usrt need to fill his profile again after next login even if he has filled it before. The problem is that in the auth.service.ts file, I only check if the student_profile exists, but forget to check if the department_profile exists. Now both of them are checked. Now I'm striving to finish the resource query and recommendation function.
+I've finished the list resource api and optimized the frontend that it would show if the student is eligible for that resource. Next step would be the recommendation function.

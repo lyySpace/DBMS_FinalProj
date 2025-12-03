@@ -14,7 +14,7 @@ export class StudentController {
     private readonly studentService: StudentService
   ) {}
   
-  @Post('profile')
+  @Put('profile')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Put()
   async upsertProfile(
@@ -26,6 +26,7 @@ export class StudentController {
     return this.profileService.upsertProfile(userId, dto);
   }
 
+  // Get data for dashboard
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('profile')
   async getMyProfile(@Req() req: any) {
@@ -33,7 +34,6 @@ export class StudentController {
 
     return this.profileService.getProfile(userId);
   }
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('student')
   @Get('gpa')
