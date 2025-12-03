@@ -1,15 +1,15 @@
 //TODO: year change to roc era, force transfer student id to uppercase, there's an issue if user havn't fill in profile and try to access dashboard
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import apiClient from '@/api/axios';
 
-
+const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
-const userRole = computed(() => authStore.role || 'student');
+const userRole = ref((route.query.role as string) || 'student');
 
 // 下拉選單資料
 const departments = ref<{id: string, name: string}[]>([]);
@@ -28,8 +28,14 @@ onMounted(async () => {
 });
 
 const profileData = ref({
-  student_id: '', department_id: '', entry_year: new Date().getFullYear(), grade: 1,
+  student_id: '', department_id: '', entry_year: new Date().getFullYear() - 1911, grade: 1,
   department_name: '', company_name: '', industry: ''
+});
+
+watch(() => profileData.value.student_id, (newVal) => {
+  if (newVal) {
+    profileData.value.student_id = newVal.toUpperCase();
+  }
 });
 
 const titleMap: Record<string, string> = {
