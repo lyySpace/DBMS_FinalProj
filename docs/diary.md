@@ -164,3 +164,11 @@ If frontend ask for user data, the password field would be masked as '*********'
 [2025-12-3 21:11]
 I fix the bug that usrt need to fill his profile again after next login even if he has filled it before. The problem is that in the auth.service.ts file, I only check if the student_profile exists, but forget to check if the department_profile exists. Now both of them are checked. Now I'm striving to finish the resource query and recommendation function.
 I've finished the list resource api and optimized the frontend that it would show if the student is eligible for that resource. Next step would be the recommendation function.
+
+[2025-12-3 01:26]
+I'm trying to implement the recommendation function. 
+There are three rules for recommendation:
+1. I have great advantage (my condition is better than other applicants)
+2. What I've clicked before
+3. What people like me clicked before
+And the final score would be calculated by weighted sum of these three factors.
