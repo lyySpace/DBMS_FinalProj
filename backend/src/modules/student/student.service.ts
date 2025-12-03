@@ -22,7 +22,7 @@ export class StudentService {
     private readonly achievementRepo: Repository<Achievement>,
   ) {}
 
-  // ---- 1. 基本資料 ----
+  
   async getInfo(userId: string) {
     const user = await this.userRepo.findOne({ where: { user_id: userId } });
     const profile = await this.profileRepo.findOne({ where: { user_id: userId } });
@@ -30,7 +30,6 @@ export class StudentService {
     return { user, profile };
   }
 
-  // ---- 2. GPA（多學期）----
   async getGpa(userId: string) {
     const gpaList = await this.gpaRepo.find({
       where: { user_id: userId },

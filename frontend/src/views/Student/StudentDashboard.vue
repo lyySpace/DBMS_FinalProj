@@ -8,7 +8,7 @@ import type { Resource, GPA, Achievement } from '@/types';
 const showAnimation = ref(false);
 
 // 資料 Ref
-const studentInfo = ref({ name: '', id: '', dept: '', totalCredits: 0 });
+const studentInfo = ref({ name: '', id: '', dept: '', Grade: 0 });
 const gpaRecords = ref<GPA[]>([]);
 const achievements = ref<Achievement[]>([]);
 const recommendedResources = ref<Resource[]>([]);
@@ -22,38 +22,30 @@ onMounted(async () => {
     // ----------------------------------------------------------------
 
     // 1. [GET] /api/student/info
-    // const resInfo = await apiClient.get('/student/info');
-    // studentInfo.value = resInfo.data;
-
+    const resInfo = await apiClient.get('/api/student/profile');
+    studentInfo.value = {
+      name: resInfo.data.user.real_name,
+      id: resInfo.data.student_id,
+      dept: resInfo.data.department_id,
+      Grade: resInfo.data.grade ?? 0
+    };
+    console.log('Student Info:', studentInfo.value);
     // 2. [GET] /api/student/gpa
-    // const resGpa = await apiClient.get('/student/gpa');
-    // gpaRecords.value = resGpa.data;
+    const resGpa = await apiClient.get('/api/student/gpa');
+    gpaRecords.value = resGpa.data;
 
-    // 3. [GET] /api/student/achievements
-    // const resAchiev = await apiClient.get('/student/achievements');
-    // achievements.value = resAchiev.data;
+    // 3. [GET] /api/student/achievement
+    const resAchiev = await apiClient.get('/api/student/achievement');
+    achievements.value = resAchiev.data;
 
     // 4. [GET] /api/student/resources/recommended
-    // const resRes = await apiClient.get('/student/resources/recommended');
+    // const resRes = await apiClient.get('/api/student/resources/recommended');
     // recommendedResources.value = resRes.data;
 
-
-    // --- MOCK DATA ---
-    studentInfo.value = { 
-      name: 'Mock Student', id: 'B112001', dept: 'Computer Science', totalCredits: 87 
-    };
-    
-    gpaRecords.value = [
-      { semester: '110-1', gpa: 3.8 },
-      { semester: '110-2', gpa: 4.0 },
-      { semester: '111-1', gpa: 3.9 },
-      { semester: '111-2', gpa: 4.15 },
-    ];
-
-    achievements.value = [
-      { achievement_id: 1, title: 'Hackathon Winner', category: 'Competition', status: 'recognized', creation_date: '2024-10-05' },
-      { achievement_id: 2, title: 'Student Association', category: 'Service', status: 'unrecognized', creation_date: '2025-01-10' }
-    ];
+    // achievements.value = [
+    //   { achievement_id: 1, title: 'Hackathon Winner', category: 'Competition', status: 'recognized', creation_date: '2024-10-05' },
+    //   { achievement_id: 2, title: 'Student Association', category: 'Service', status: 'unrecognized', creation_date: '2025-01-10' }
+    // ];
 
     recommendedResources.value = [
       { 
@@ -91,8 +83,8 @@ const getStatusClass = (status: string) => {
         </div>
         <div class="hero-stats">
           <div class="stat-box">
-            <span class="label">Total Credits</span>
-            <span class="value">{{ studentInfo.totalCredits }}</span>
+            <span class="label">Grade</span>
+            <span class="value">{{ studentInfo.Grade }}</span>
           </div>
         </div>
       </div>

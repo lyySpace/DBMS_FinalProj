@@ -155,3 +155,8 @@ Next step would be the application of resource by students. I generated 3 entiti
 
 [2025-12-3 13:15]
 I export current database to backup.sql. Export the csv files of the database tables for testing purpose.
+
+[2025-12-3 14:51]
+The password of the generated data isn't 'ntu-2025-test'.....Waste me lot of time. I change it into '123456'
+I finished the api of get students' gpa records.
+If frontend ask for user data, the password field would be masked as '*********' for security reason.

@@ -30,15 +30,19 @@ export class StudentController {
   @Get('profile')
   async getMyProfile(@Req() req: any) {
     const userId = req.user.sub;
-    console.log("info: ", this.profileService.getProfile(userId));
+
     return this.profileService.getProfile(userId);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('student')
   @Get('gpa')
   getGpa(@Req() req: any) {
+    console.log('Fetching GPA for userId:', req.user.sub);
     return this.studentService.getGpa(req.user.sub);
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('student')
   @Get('achievement')
   getAchievement(@Req() req: any) {
     return this.studentService.getAchievement(req.user.sub);
