@@ -153,13 +153,22 @@ CREATE TABLE resource (
 -------------------------------------------------
 CREATE TABLE resource_condition (
     condition_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    resource_id UUID REFERENCES resource(resource_id) ON DELETE CASCADE,
-    department_id VARCHAR(50) NOT NULL REFERENCES department_profile(department_id),
+
+    resource_id UUID NOT NULL
+        REFERENCES resource(resource_id)
+        ON DELETE CASCADE,
+
+    department_id VARCHAR(50)
+        REFERENCES department_profile(department_id)
+        ON DELETE SET NULL,  -- NULL 表示適用所有系所
+
     avg_gpa FLOAT CHECK(avg_gpa BETWEEN 0 AND 4.3),
     current_gpa FLOAT CHECK(current_gpa BETWEEN 0 AND 4.3),
-    is_poor BOOLEAN,
-    PRIMARY KEY(resource_id, department_id)
+    is_poor BOOLEAN, 
+
+    CONSTRAINT unique_resource_department UNIQUE(resource_id, department_id)
 );
+
 
 -- CREATE TABLE resource_condition (
 --     resource_id UUID REFERENCES resource(resource_id) ON DELETE CASCADE,

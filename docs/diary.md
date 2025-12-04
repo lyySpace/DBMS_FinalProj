@@ -180,3 +180,6 @@ A test student
 std_479_159067
 
 I should add uuid to each condition. If a resource has multiple conditions, the system would find if there's any condition that matches the student's department. If so, applying this condition to this student. Otherwise, if there's no condition matching the student's department and there's a condition that doesn't has eligible department (which means this resource is for all departments), this condition would be applied to this student. If there's no condition matching the student's department and no condition for all departments, then this student is not eligible for this resource.
+
+[2025-12-4 11:28]
+I update the router of resource condition.

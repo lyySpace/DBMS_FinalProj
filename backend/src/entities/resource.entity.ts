@@ -43,6 +43,9 @@ export class Resource {
   @Column({ type: 'boolean', default: false })
   is_deleted: boolean;
 
-  @OneToMany(() => ResourceCondition, (rc) => rc.resource)
+  @OneToMany(() => ResourceCondition, (rc) => rc.resource, {
+    cascade: true,  // 自動新增/更新條件
+    eager: true,    // 查 resource 時自動帶出 conditions
+  })
   conditions: ResourceCondition[];
 }

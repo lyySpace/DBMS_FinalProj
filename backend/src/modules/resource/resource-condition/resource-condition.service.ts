@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ResourceCondition } from '../../../entities/resource-condition.entity';
 import { UpsertResourceConditionDto } from './dto/upsert-resource-condition.dto';
 import { StudentProfile } from '../../../entities/student-profile.entity';
-import { BadRequestException } from '@nestjs/common';
+import { Resource } from '../../../entities/resource.entity';
 
 @Injectable()
 export class ResourceConditionService {
@@ -13,27 +13,78 @@ export class ResourceConditionService {
     private readonly rcRepo: Repository<ResourceCondition>,
     @InjectRepository(StudentProfile)
     private readonly studentRepo: Repository<StudentProfile>,
+    @InjectRepository(Resource)
+    private readonly resourceRepo: Repository<Resource>,
   ) {}
 
-  // 新增或更新某 resource 對某 department 的 eligibility
   async upsertCondition(
     resource_id: string,
     dto: UpsertResourceConditionDto,
+    user: any, // 假設包含 { sub, role }
   ): Promise<ResourceCondition> {
-    //console.log('Upsert condition DTO:', dto);
     const { department_id, avg_gpa, current_gpa, is_poor } = dto;
 
-    const condition = this.rcRepo.create({
-      resource_id,
-      department_id,
-      avg_gpa: avg_gpa ?? null,
-      current_gpa: current_gpa ?? null,
-      is_poor: typeof is_poor === 'boolean' ? is_poor : null,
+    // ==========================
+    // 0. 權限檢查：確認 resource 是否存在 + 是否擁有修改權限
+    // ==========================
+    const resource = await this.resourceRepo.findOne({
+      where: { resource_id },
+    });
+    if (!resource) throw new NotFoundException('Resource not found');
+
+    // 部門供應者只能修改屬於自己的 resource
+    if (user.role === 'department') {
+      if (resource.department_supplier_id !== user.sub) {
+        throw new BadRequestException(
+          'You do not have permission to modify this resource',
+        );
+      }
+    }
+
+    // 企業供應者只能修改屬於自己的 resource
+    if (user.role === 'company') {
+      if (resource.company_supplier_id !== user.sub) {
+        throw new BadRequestException(
+          'You do not have permission to modify this resource',
+        );
+      }
+    }
+
+    // ==========================
+    // 1. 查找現有條件（唯一 key: resource_id + department_id）
+    // ==========================
+    const existing = await this.rcRepo.findOne({
+      where: {
+        resource_id,
+        department_id: department_id ?? null,
+      },
     });
 
-    const saved = await this.rcRepo.save(condition);
-    const count = await this.countEligibleStudents(resource_id);
+    let condition: ResourceCondition;
 
+    if (existing) {
+      // ===== 更新 =====
+      condition = existing;
+      condition.avg_gpa = avg_gpa ?? null;
+      condition.current_gpa = current_gpa ?? null;
+      condition.is_poor = typeof is_poor === 'boolean' ? is_poor : null;
+    } else {
+      // ===== 新增 =====
+      condition = this.rcRepo.create({
+        resource_id,
+        department_id: department_id ?? null,
+        avg_gpa: avg_gpa ?? null,
+        current_gpa: current_gpa ?? null,
+        is_poor: typeof is_poor === 'boolean' ? is_poor : null,
+      });
+    }
+
+    const saved = await this.rcRepo.save(condition);
+
+    // ==========================
+    // 2. eligibility 檢查
+    // ==========================
+    const count = await this.countEligibleStudents(resource_id);
     if (count < 1) {
       throw new BadRequestException(
         `No students meet the eligibility criteria after this update, please adjust the conditions.`,
@@ -43,6 +94,8 @@ export class ResourceConditionService {
     return saved;
   }
 
+
+  // 計算符合任一條件的學生
   async countEligibleStudents(resource_id: string): Promise<number> {
     const conditions = await this.getConditionsByResource(resource_id);
 
@@ -52,13 +105,14 @@ export class ResourceConditionService {
 
     for (const cond of conditions) {
       qb.orWhere(
-        `(s.department_id = :d AND 
-          (s.avg_gpa >= :avg OR :avg IS NULL) AND 
-          (s.current_gpa >= :curr OR :curr IS NULL) AND 
-          (s.is_poor = :poor OR :poor IS NULL)
+        `(
+          (:dept IS NULL OR s.department_id = :dept)
+          AND (:avg IS NULL OR s.avg_gpa >= :avg)
+          AND (:curr IS NULL OR s.current_gpa >= :curr)
+          AND (:poor IS NULL OR s.is_poor = :poor)
         )`,
         {
-          d: cond.department_id,
+          dept: cond.department_id,
           avg: cond.avg_gpa,
           curr: cond.current_gpa,
           poor: cond.is_poor,
@@ -69,8 +123,7 @@ export class ResourceConditionService {
     return qb.getCount();
   }
 
-
-  // 取得某 resource 的全部 eligibility rule
+  // 取得某 resource 的所有條件
   async getConditionsByResource(resource_id: string): Promise<ResourceCondition[]> {
     return this.rcRepo.find({
       where: { resource_id },
@@ -78,12 +131,12 @@ export class ResourceConditionService {
     });
   }
 
-  // 刪除特定 resource + department 的 eligibility
-  async deleteCondition(resource_id: string, department_id: string): Promise<void> {
-    await this.rcRepo.delete({ resource_id, department_id });
+  // **改成使用 condition_id**
+  async deleteCondition(condition_id: string): Promise<void> {
+    await this.rcRepo.delete({ condition_id });
   }
 
-  // 刪除某 resource 的所有 eligibility（通常在刪 resource 時一起用）
+  // 保留：刪除某 resource 所有條件
   async deleteAllByResource(resource_id: string): Promise<void> {
     await this.rcRepo.delete({ resource_id });
   }

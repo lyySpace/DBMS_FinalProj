@@ -16,9 +16,9 @@ export class ResourceService {
   constructor(
     @InjectRepository(Resource)
     private readonly resourceRepo: Repository<Resource>,
-		
-		@InjectRepository(ResourceCondition)
-		private readonly rcRepo: Repository<ResourceCondition>,
+
+    @InjectRepository(ResourceCondition)
+    private readonly rcRepo: Repository<ResourceCondition>,
 
     private readonly rcService: ResourceConditionService,
 
@@ -27,9 +27,6 @@ export class ResourceService {
 
   /**
    * 建立新資源
-   * - 由登入者角色決定 supplier_id
-   * - 建立 resource record
-   * - 建立 resource_condition eligibility rule
    */
   async createResource(user: any, dto: CreateResourceDto) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -40,11 +37,13 @@ export class ResourceService {
       const resource = this.resourceRepo.create({
         resource_type: dto.resource_type,
         quota: dto.quota,
-				department_supplier_id: user.role === 'department' ? user.sub : undefined,
-				company_supplier_id: user.role === 'company' ? user.sub : undefined,
+        department_supplier_id:
+          user.role === 'department' ? user.sub : null,
+        company_supplier_id:
+          user.role === 'company' ? user.sub : null,
         title: dto.title,
         deadline: dto.deadline ?? null,
-        description: dto.description
+        description: dto.description,
       });
 
       const saved = await queryRunner.manager.save(Resource, resource);
@@ -63,62 +62,20 @@ export class ResourceService {
     }
   }
 
-	async addCondition(resourceId: string, dto: UpsertResourceConditionDto, user: any) {
-		const resource = await this.resourceRepo.findOne({
-			where: { resource_id: resourceId },
-		});
-		if (!resource) throw new NotFoundException('Resource not found');
-
-		if (user.role === 'department') {
-			if (resource.department_supplier_id !== user.sub) {
-				throw new BadRequestException('You do not have permission to modify this resource');
-			}
-		}
-
-		if (user.role === 'company') {
-			if (resource.company_supplier_id !== user.sub) {
-				throw new BadRequestException('You do not have permission to modify this resource');
-			}
-		}
-
-		// Step 1: 新增 condition
-		const condition = this.rcRepo.create({
-			resource_id: resourceId,
-			department_id: dto.department_id,
-			avg_gpa: dto.avg_gpa ?? null,
-			current_gpa: dto.current_gpa ?? null,
-			is_poor: dto.is_poor ?? null,
-		});
-
-		await this.rcRepo.save(condition);
-
-		// Step 2: 更新資源狀態
-		const count = await this.rcRepo.count({ where: { resource_id: resourceId } });
-		if (count >= 1 && resource.status !== 'Available') {
-			resource.status = 'Available';
-			await this.resourceRepo.save(resource);
-		}
-
-		return { message: 'Condition added', total_conditions: count };
-	}
-
-
   /**
    * 查詢使用者自己建立的資源
-   * - department → 篩選 department_supplier_id
-   * - company → 篩選 company_supplier_id
    */
   async getMyResources(user: any) {
     if (user.role === 'department') {
       return this.resourceRepo.find({
-        where: { department_supplier_id: user.department_id },
+        where: { department_supplier_id: user.sub },
         order: { deadline: 'ASC' },
       });
     }
 
     if (user.role === 'company') {
       return this.resourceRepo.find({
-        where: { company_supplier_id: user.company_id },
+        where: { company_supplier_id: user.sub },
         order: { deadline: 'ASC' },
       });
     }
@@ -146,6 +103,57 @@ export class ResourceService {
     };
   }
 
+  async updateStatus(
+    resource_id: string,
+    newStatus: string | undefined,
+    user: { sub: string; role: string },
+  ): Promise<void> {
+    // 0. 先抓 resource
+    const resource = await this.resourceRepo.findOne({
+      where: { resource_id },
+    });
+    if (!resource) throw new NotFoundException('Resource not found');
+
+    // 1. 權限檢查
+    if (user.role === 'department') {
+      if (resource.department_supplier_id !== user.sub) {
+        throw new BadRequestException('You do not have permission to modify this resource');
+      }
+    }
+
+    if (user.role === 'company') {
+      if (resource.company_supplier_id !== user.sub) {
+        throw new BadRequestException('You do not have permission to modify this resource');
+      }
+    }
+
+    // ===== 使用者手動指定狀態 =====
+    if (newStatus !== undefined) {
+      resource.status = newStatus;
+      await this.resourceRepo.save(resource);
+      return;
+    }
+
+    // ===== 系統自動決定狀態 =====
+    const condCount = await this.rcRepo.count({
+      where: { resource_id },
+    });
+
+    // 沒條件 → Unavailable
+    if (condCount === 0) {
+      resource.status = 'Unavailable';
+      await this.resourceRepo.save(resource);
+      return;
+    }
+
+    // 根據是否有符合學生決定 Available / Unavailable
+    const eligible = await this.rcService.countEligibleStudents(resource_id);
+    resource.status = eligible > 0 ? 'Available' : 'Unavailable';
+
+    await this.resourceRepo.save(resource);
+  }
+
+  // Search all available resource
   async getAllResources() {
     const sql = `
       SELECT
@@ -172,5 +180,4 @@ export class ResourceService {
     `;
     return this.dataSource.query(sql);
   }
-
 }
