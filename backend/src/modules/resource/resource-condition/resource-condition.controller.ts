@@ -11,7 +11,7 @@ import { Roles } from '../../../common/decorators/roles.decorator';
 // PUT /resource/:resource_id/condition
 @Controller('resource')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('department')
+@Roles('department', 'company')
 export class ResourceConditionController {
   constructor(
     private readonly conditionService: ResourceConditionService,

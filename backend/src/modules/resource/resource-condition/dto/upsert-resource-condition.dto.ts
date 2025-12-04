@@ -2,6 +2,7 @@ import { IsString, IsOptional, IsNumber, IsBoolean } from 'class-validator';
 
 export class UpsertResourceConditionDto {
   @IsString()
+  @IsOptional()
   department_id: string; // eligibility 限制的系所
 
   @IsOptional()

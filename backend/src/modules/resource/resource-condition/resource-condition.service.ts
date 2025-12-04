@@ -23,7 +23,6 @@ export class ResourceConditionService {
     user: any, // 假設包含 { sub, role }
   ): Promise<ResourceCondition> {
     const { department_id, avg_gpa, current_gpa, is_poor } = dto;
-
     // ==========================
     // 0. 權限檢查：確認 resource 是否存在 + 是否擁有修改權限
     // ==========================
@@ -31,6 +30,14 @@ export class ResourceConditionService {
       where: { resource_id },
     });
     if (!resource) throw new NotFoundException('Resource not found');
+
+    // console.log('ResourceCondition Debug')
+    // if (user.role === 'department')
+    //   console.log(resource.department_supplier_id);
+    // else 
+    //   console.log(resource.company_supplier_id);
+    // console.log(user.sub)
+
 
     // 部門供應者只能修改屬於自己的 resource
     if (user.role === 'department') {
