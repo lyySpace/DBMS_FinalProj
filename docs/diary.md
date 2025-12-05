@@ -221,3 +221,6 @@ Running 30s test @ http://localhost:3000/api/resource/list
   Non-2xx or 3xx responses: 159823
 Requests/sec:   5355.46
 Transfer/sec:     38.91MB
+
+[2025-12-5 17:03]
+I tried to implement the project to docker but failed. Need to study more about docker networking.

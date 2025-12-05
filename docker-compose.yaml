@@ -26,22 +26,36 @@ services:
       dockerfile: Dockerfile
     container_name: group7_backend
 
-    # 持續開發時掛載程式碼（你會頻繁修改 controller/service）
     volumes:
       - ./backend:/app
 
-    env_file: backend/.env.docker
+    env_file:
+      - ./backend/.env.docker
 
-    # backend 必須在 db、redis 準備好後啟動
     depends_on:
       - db
       - redis
 
-    # NestJS 正式啟動
-    command: node dist/main.js
-
+    # 一定要確認你的 Nest 是跑在 8000
     ports:
       - "127.0.0.1:8000:8000"
+
+    command: node dist/main.js
+    restart: "no"
+
+  frontend:
+    build: ./frontend
+    container_name: group7_frontend
+    ports:
+      - "127.0.0.1:5173:80"
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env.docker
+
+    volumes:
+      - ./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./frontend/dist:/usr/share/nginx/html:ro
 
     restart: "no"
 
