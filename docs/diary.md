@@ -255,3 +255,7 @@ I'm trying to deploy a file upload function so that user can upload the cert. fi
 
 I successfully implemented the file upload function for achievement. User can upload a cert. file while creating an achievement. The file would be stored in the server's local storage under /uploads/achievement/ folder. The file path would be stored in the database. Good news! 
 Now I finished the get application and create application api. Student can apply for a resource now. Next step would be the company or the department to review the applications.
+
+[2025-12-6 17:22]
+This system should automatically delete the canceled applications after 30 days.
+I've finished the cancel application api, but havn't finish the create application api yet. A little strange order.

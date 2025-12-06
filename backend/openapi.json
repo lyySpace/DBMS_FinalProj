@@ -202,6 +202,30 @@
         ]
       }
     },
+    "/api/student/applications/{resourceId}": {
+      "delete": {
+        "operationId": "StudentController_cancelApplication",
+        "parameters": [
+          {
+            "name": "resourceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Application canceled successfully."
+          }
+        },
+        "summary": "Cancel a student application",
+        "tags": [
+          "Student"
+        ]
+      }
+    },
     "/api/student/achievement/create": {
       "post": {
         "operationId": "AchievementController_createAchievement",

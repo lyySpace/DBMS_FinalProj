@@ -43,7 +43,7 @@ export class StudentService {
     return gpaList;
   }
 
-  // ---- 3. Achievement ----
+  // ---- Achievement ----
   async getAchievement(userId: string) {
     return this.achievementRepo.find({
       where: { user_id: userId },
@@ -51,6 +51,7 @@ export class StudentService {
     });
   }
 
+  // ---- Applications ----
   async getMyApplications(userId: string) {
     const sql = `
 SELECT
@@ -83,5 +84,22 @@ ORDER BY a.apply_date DESC;
     `;
     return this.dataSource.query(sql, [userId]);
   }
+
+  async cancelApplication(userId: string, resourceId: string) {
+    const sql = `
+DELETE FROM application
+WHERE user_id = $1 AND resource_id = $2
+RETURNING *;
+    `;
+
+    const result = await this.dataSource.query(sql, [userId, resourceId]);
+
+    if (result.length === 0) {
+      throw new NotFoundException('Application not found or not owned by user');
+    }
+
+    return { success: true };
+  }
+
 
 }

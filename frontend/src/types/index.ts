@@ -12,6 +12,8 @@ export interface User {
   real_name: string;
   role: UserRole;
   needProfile: boolean;
+
+  is_admin?: boolean;
 }
 
 export interface Resource {

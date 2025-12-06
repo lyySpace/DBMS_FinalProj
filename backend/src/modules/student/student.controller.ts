@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Param, Body, UseGuards, Req } from '@nestjs/common';
 import { ProfileService } from './profile/profile.service';
 import { UpsertStudentProfileDto } from './dto/upsert-student-profile.dto';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -56,6 +56,8 @@ export class StudentController {
   getAchievement(@Req() req: any) {
     return this.studentService.getAchievement(req.user.sub);
   }
+
+  // Applications
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('student')
   @Get('applications')
@@ -65,5 +67,19 @@ export class StudentController {
     const userId = req.user.sub;
     return this.studentService.getMyApplications(userId);
   }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('student')
+  @ApiOperation({ summary: 'Cancel a student application' })
+  @ApiResponse({ status: 200, description: 'Application canceled successfully.' })
+  @Delete('applications/:resourceId')
+  async cancelApplication(
+    @Req() req: any,
+    @Param('resourceId') resourceId: string
+  ) {
+    const userId = req.user.sub;
+    return this.studentService.cancelApplication(userId, resourceId);
+  }
+
+
 
 }

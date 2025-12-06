@@ -22,51 +22,13 @@ const applications = ref<MyApplication[]>([]);
 onMounted(async () => {
   isLoading.value = true;
   try {
-    // ----------------------------------------------------------------
-    // TO DO: [GET] /api/student/applications
-    // ----------------------------------------------------------------
     const res = await apiClient.get('/api/student/applications');
-    applications.value = res.data;
-
-    // --- Mock Data ---
-    await new Promise(r => setTimeout(r, 600));
-    // applications.value = [
-    //   {
-    //     application_id: 'a1', resource_id: 'r1',
-    //     resource_title: 'Software Engineer Intern',
-    //     supplier_name: 'TSMC',
-    //     apply_date: '2025-02-24',
-    //     status: 'submitted'
-    //   },
-    //   {
-    //     application_id: 'a2', resource_id: 'r2',
-    //     resource_title: 'Lab Research Assistant',
-    //     supplier_name: 'Prof. Chang (Quantum Lab)',
-    //     apply_date: '2025-02-10',
-    //     status: 'under_review'
-    //   },
-    //   {
-    //     application_id: 'a3', resource_id: 'r3',
-    //     resource_title: 'Merit Scholarship 2024',
-    //     supplier_name: 'Academic Office',
-    //     apply_date: '2024-11-15',
-    //     status: 'approved'
-    //   },
-    //   {
-    //     application_id: 'a4', resource_id: 'r5',
-    //     resource_title: 'Exchange Program - USA',
-    //     supplier_name: 'Intl. Office',
-    //     apply_date: '2024-10-01',
-    //     status: 'rejected'
-    //   },
-    //   {
-    //     application_id: 'a5', resource_id: 'r6',
-    //     resource_title: 'Data Analyst Intern',
-    //     supplier_name: 'Shopee',
-    //     apply_date: '2024-09-20',
-    //     status: 'rejected'
-    //   }
-    // ];
+    applications.value = res.data.map((app: any) => ({
+          ...app,
+          application_id: `${app.user_id}-${app.resource_id}` 
+        })) as MyApplication[];
+    console.log(applications.value);
+    await new Promise(r => setTimeout(r, 300));
   } catch (error) {
     console.error(error);
   } finally {
@@ -93,13 +55,21 @@ const getStatusClass = (status: string) => {
   }
 };
 
-const handleCancel = (appId: string) => {
-  if(confirm('Are you sure you want to cancel this application?')) {
-    console.log('Cancel application:', appId);
-    // TODO: Call API
-    applications.value = applications.value.filter(a => a.application_id !== appId);
+const handleCancel = async (resourceId: string) => {
+  if (!confirm('Are you sure you want to cancel this application?')) return;
+  console.log('Cancelling application:', resourceId);
+  try {
+    await apiClient.delete(`/api/student/applications/${resourceId}`);
+
+    applications.value = applications.value.filter(
+      a => a.resource_id !== resourceId
+    );
+  } catch (err) {
+    console.error(err);
+    alert('Failed to cancel application.');
   }
 };
+
 
 const goBack = () => router.back();
 </script>
@@ -146,7 +116,7 @@ const goBack = () => router.back();
              <button 
                v-if="app.status === 'submitted'" 
                class="btn-cancel" 
-               @click="handleCancel(app.application_id)"
+               @click="handleCancel(app.resource_id)"
              >
                Cancel Application
              </button>
@@ -156,7 +126,6 @@ const goBack = () => router.back();
              </button>
           </div>
         </div>
-        
       </div>
     </div>
 

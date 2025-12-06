@@ -42,7 +42,7 @@ async function handleLogout() {
           <span class="logo-icon">❖</span>
           <span class="logo-text">UniConnect - University / Unity / Universe Connect</span>
         </div>
-        
+                
         <nav class="nav-links">
           <template v-if="!authStore.isLoggedIn">
             <router-link to="/login">Log in</router-link>
@@ -51,6 +51,15 @@ async function handleLogout() {
 
           <template v-else>
             <router-link :to="dashboardLink">Dashboard</router-link>
+
+            <!-- 如果是 admin 才顯示 -->
+            <router-link
+              v-if="authStore.user?.is_admin"
+              to="/admin/dashboard"
+            >
+              Admin
+            </router-link>
+
             <a href="#" @click.prevent="handleLogout">Log out</a>
           </template>
         </nav>
