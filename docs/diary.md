@@ -259,3 +259,13 @@ Now I finished the get application and create application api. Student can apply
 [2025-12-6 17:22]
 This system should automatically delete the canceled applications after 30 days.
 I've finished the cancel application api, but havn't finish the create application api yet. A little strange order.
+
+[2025-12-6 18:56]
+I deployed the application functions at sutdent.servece, this sholdn't occur, the functions should be placed in application.service. I'll test the cencel function after finishing the create application function.
+This is a test student account:
+std_479_159067
+std_196_515035
+
+I've finished the create application api. Now student can apply for a resource. Next step would be the company or department to review the applications.
+Besides, I modify the design of the resource page, now if user clicks the "Apply" button, a modal would pop up to show the resource conditions and ask for confirmation. This can enhance user experience.
+There should be a status attribute for user entity, the status can be 'active', 'suspended', 'deleted'. This can enhance the user management function, but this is a minor function. Resource page also need to be modified that hidden the resources that the student has applied. 

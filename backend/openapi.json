@@ -187,9 +187,9 @@
         ]
       }
     },
-    "/api/student/applications": {
+    "/api/student/application/my": {
       "get": {
-        "operationId": "StudentController_getApplications",
+        "operationId": "ApplicationController_getApplications",
         "parameters": [],
         "responses": {
           "200": {
@@ -198,13 +198,13 @@
         },
         "summary": "Get student applications",
         "tags": [
-          "Student"
+          "Application"
         ]
       }
     },
-    "/api/student/applications/{resourceId}": {
+    "/api/student/application/{resourceId}": {
       "delete": {
-        "operationId": "StudentController_cancelApplication",
+        "operationId": "ApplicationController_cancelApplication",
         "parameters": [
           {
             "name": "resourceId",
@@ -222,7 +222,32 @@
         },
         "summary": "Cancel a student application",
         "tags": [
-          "Student"
+          "Application"
+        ]
+      }
+    },
+    "/api/student/application/create": {
+      "post": {
+        "operationId": "ApplicationController_createApplication",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Application created successfully."
+          }
+        },
+        "summary": "Create a new application",
+        "tags": [
+          "Application"
         ]
       }
     },
@@ -614,6 +639,10 @@
         "properties": {}
       },
       "UpsertStudentProfileDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateApplicationDto": {
         "type": "object",
         "properties": {}
       },

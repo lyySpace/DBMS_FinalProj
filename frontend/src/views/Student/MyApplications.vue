@@ -22,7 +22,7 @@ const applications = ref<MyApplication[]>([]);
 onMounted(async () => {
   isLoading.value = true;
   try {
-    const res = await apiClient.get('/api/student/applications');
+    const res = await apiClient.get('/api/student/application/my');
     applications.value = res.data.map((app: any) => ({
           ...app,
           application_id: `${app.user_id}-${app.resource_id}` 
@@ -59,7 +59,7 @@ const handleCancel = async (resourceId: string) => {
   if (!confirm('Are you sure you want to cancel this application?')) return;
   console.log('Cancelling application:', resourceId);
   try {
-    await apiClient.delete(`/api/student/applications/${resourceId}`);
+    await apiClient.delete(`/api/student/application/${resourceId}`);
 
     applications.value = applications.value.filter(
       a => a.resource_id !== resourceId

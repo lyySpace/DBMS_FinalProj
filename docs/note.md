@@ -140,6 +140,14 @@ docker exec -i group7_psql psql -U postgres -d group7_db < backup.sql
 update "user" set is_admin=true where username='b12508026';
 ```
 
+- export current database to backup.sql
+``` bash
+-- w/ create db
+docker exec -i group7_psql pg_dump -U postgres -d group7_db > backup.sql
+-- w/o create db
+docker exec -t group7_psql pg_dump -U postgres -C group7_db > backup.sql
+```
+
 ## Insert data into database
 ``` bash
 docker cp insert_.sql group7_psql:/tmp/
